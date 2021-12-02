@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "npm test"
+    "test": "npm test",
+    "lint": "eslint --fix --ext .js,.jsx ."
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/Milkjake/advent-of-code-2021/issues"
   },
-  "homepage": "https://github.com/Milkjake/advent-of-code-2021#readme"
+  "homepage": "https://github.com/Milkjake/advent-of-code-2021#readme",
+  "devDependencies": {
+    "eslint": "^8.3.0",
+    "eslint-config-google": "^0.14.0"
+  }
 }
