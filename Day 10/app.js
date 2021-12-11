@@ -1,7 +1,7 @@
 const fs = require('fs');
 
-// const input = fs.readFileSync('input.txt').toString().replace(/\r\n/g, '\n').split('\n');
-const input = fs.readFileSync('testinput.txt').toString().replace(/\r\n/g, '\n').split('\n');
+const input = fs.readFileSync('input.txt').toString().replace(/\r\n/g, '\n').split('\n');
+// const input = fs.readFileSync('testinput.txt').toString().replace(/\r\n/g, '\n').split('\n');
 
 (function () {
 
@@ -55,21 +55,47 @@ const input = fs.readFileSync('testinput.txt').toString().replace(/\r\n/g, '\n')
     console.log(totalSyntaxErrorScore);
 
     // part 2
-    const incompleteCharPointMap = new Map();
+    const completionCharPointMap = new Map();
 
-    incompleteCharPointMap.set(")", 1);
-    incompleteCharPointMap.set("]", 2);
-    incompleteCharPointMap.set("}", 3);
-    incompleteCharPointMap.set(">", 4);
+    completionCharPointMap.set(")", 1);
+    completionCharPointMap.set("]", 2);
+    completionCharPointMap.set("}", 3);
+    completionCharPointMap.set(">", 4);
 
-    const incompleteNavSubsystem = navSubsystem.filter((_, idx) => corruptedLines.includes(idx));
+    const incompleteNavSubsystem = navSubsystem.filter((_, idx) => !corruptedLines.includes(idx));
 
     let totalLineCompletionScores = [];
 
-    for (const ins of incompleteNavSubsystem) {
-        let totalScore = 0;
+    for (let i = 0; i < incompleteNavSubsystem.length; i++) {
+        let stack = [];
+        let current;
+        let score = 0;
+
+        for (let j = 0; j < incompleteNavSubsystem[i].length; j++) {
+            current = incompleteNavSubsystem[i][j];
+
+            if (current === '(' || current === '[' || current === "{" || current === "<") {
+                stack.push(current);
+
+            } else if (current === ')' || current === ']' || current === "}" || current === ">") {
+                stack.pop();
+            }
+        }
+
+        let autoCompleteString = "";
+        for (const s of stack.reverse()) {
+            autoCompleteString += matchLookupMap.get(s);
+        }
+
+        for (const closingChar of autoCompleteString) {
+            score *= 5;
+            score += completionCharPointMap.get(closingChar);
+        }
+
+        totalLineCompletionScores.push(score);
     }
 
     totalLineCompletionScores = totalLineCompletionScores.sort((a, b) => a - b);
-    console.log(totalLineCompletionScores[totalLineCompletionScores.length / 2]);
+    console.log(totalLineCompletionScores[Math.floor(totalLineCompletionScores.length / 2)]);
+
 })();
